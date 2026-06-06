@@ -6,8 +6,14 @@ const { withUniwindConfig } = require('uniwind/metro');
 let config = getDefaultConfig(__dirname);
 
 config.resolver.sourceExts.push('sql');
+config.resolver.unstable_enablePackageExports = false;
 config.watchFolders.push(path.resolve(__dirname, 'packages'));
-config.watchFolders.push(path.resolve(__dirname, 'node_modules/react-native-worklets/.worklets'));
+
+// ✅ 关键修复：用 glob 模式包含 .pnpm 下的 .worklets 文件
+config.resolver.assetExts.push('js');
+config.resolver.blockList = [
+  /node_modules\/\.pnpm\/.*\.worklets\/.*/,
+];
 
 const defaultResolver = config.resolver.resolveRequest;
 
